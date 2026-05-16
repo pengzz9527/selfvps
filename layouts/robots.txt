@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Sitemap: {{ .Site.BaseURL }}sitemap.xml
+{{- range .Site.Home.AllTranslations }}
+Sitemap: {{ .Permalink }}sitemap.xml
+{{- end }}
+
+# 屏蔽管理路径和临时文件
+Disallow: /admin/
+Disallow: /tmp/
+Disallow: /*.pdf$

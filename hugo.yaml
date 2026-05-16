@@ -1,0 +1,223 @@
+baseURL: "https://selfvps.net/"
+title: "SelfVPS 指南"
+theme: "stack"
+defaultContentLanguage: "zh"
+defaultContentLanguageInSubdir: true
+enableRobotsTXT: true
+enableEmoji: true
+hasCJKLanguage: true
+
+languages:
+  zh:
+    contentDir: "content/zh"
+    label: "中文"
+    locale: "zh-CN"
+    weight: 1
+    title: "SelfVPS 指南"
+    description: "开源项目自托管教程、云服务省钱指南、VPS 运维实战"
+    params:
+      sidebar:
+        subtitle: "开源项目自托管 · 云服务省钱 · VPS 运维实战"
+    menu:
+      main:
+        - identifier: home
+          name: "首页"
+          url: "/zh/"
+          weight: 10
+        - identifier: post
+          name: "文章"
+          url: "/zh/post/"
+          weight: 20
+        - identifier: categories
+          name: "分类"
+          url: "/zh/categories/"
+          weight: 30
+        - identifier: tags
+          name: "标签"
+          url: "/zh/tags/"
+          weight: 40
+        - identifier: search
+          name: "搜索"
+          url: "/zh/search/"
+          weight: 50
+        - identifier: cheatsheet
+          name: "速查表"
+          url: "/zh/cheatsheet/"
+          weight: 55
+        - identifier: newsletter
+          name: "订阅"
+          url: "/zh/newsletter/"
+          weight: 57
+        - identifier: about
+          name: "关于"
+          url: "/zh/about/"
+          weight: 60
+
+  en:
+    contentDir: "content/en"
+    label: "English"
+    locale: "en-US"
+    weight: 2
+    title: "SelfVPS Guide"
+    description: "Self-hosted open-source tools, cloud cost-saving tips & VPS deployment guides"
+    params:
+      sidebar:
+        subtitle: "Self-hosted tools · Cloud savings · VPS guides"
+    menu:
+      main:
+        - identifier: home
+          name: "Home"
+          url: "/en/"
+          weight: 10
+        - identifier: post
+          name: "Posts"
+          url: "/en/post/"
+          weight: 20
+        - identifier: categories
+          name: "Categories"
+          url: "/en/categories/"
+          weight: 30
+        - identifier: tags
+          name: "Tags"
+          url: "/en/tags/"
+          weight: 40
+        - identifier: search
+          name: "Search"
+          url: "/en/search/"
+          weight: 50
+        - identifier: cheatsheet
+          name: "Cheatsheet"
+          url: "/en/cheatsheet/"
+          weight: 55
+        - identifier: newsletter
+          name: "Newsletter"
+          url: "/en/newsletter/"
+          weight: 57
+        - identifier: about
+          name: "About"
+          url: "/en/about/"
+          weight: 60
+        - identifier: contact
+          name: "Contact"
+          url: "/en/contact/"
+          weight: 70
+
+# Main sections
+mainSections:
+  - "post"
+
+params:
+  author: "Ross Zhang"
+  description: "开源项目自托管教程、云服务省钱指南、VPS 运维实战"
+
+  # Umami Analytics — will update websiteID after creating
+  umami:
+    serverURL: "https://umami.duckdblab.org"
+    websiteID: "84e19bc4-3fb9-4a6c-afe0-caa790d691ed"
+
+  # Footer
+  footer:
+    since: 2026
+    customText: '<a href="/en/privacy/">Privacy</a> · <a href="/en/terms/">Terms</a> · <a href="/zh/privacy/">隐私政策</a> · <a href="/zh/terms/">服务条款</a>'
+
+  # Sidebar
+  sidebar:
+    compact: false
+    avatar: ""
+
+  # Article display
+  article:
+    readingTime: true
+    toc: true
+    math: false
+    headingAnchor: false
+    list:
+      showTags: true
+    license:
+      enabled: true
+      default: "Licensed under CC BY-NC-SA 4.0"
+
+  # Widgets
+  widgets:
+    homepage:
+      - type: search
+      - type: categories
+        params:
+          limit: 10
+      - type: tag-cloud
+        params:
+          limit: 20
+    page:
+      - type: profile
+      - type: toc
+
+  # Search
+  search:
+    enabled: true
+    provider: "fuse"
+    fuse:
+      isCaseSensitive: false
+      threshold: 0.4
+      distance: 100
+
+  # Color scheme
+  colorScheme:
+    toggle: true
+    default: "auto"
+
+  # Image processing
+  imageProcessing:
+    content:
+      enabled: false
+
+  # Google AdSense
+  googleAdSense:
+    publisherID: "YOUR_PUB_ID"
+
+  # Comments
+  comments:
+    enabled: false
+
+  # Meta
+  opengraph:
+    twitter:
+      site: ""
+      card: "summary_large_image"
+
+  # Cookie consent
+  cookies:
+    enabled: false
+
+permalinks:
+  post: "/:section/:slug/"
+
+taxonomies:
+  category: categories
+  tag: tags
+
+markup:
+  highlight:
+    noClasses: false
+  goldmark:
+    renderer:
+      unsafe: true
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - SITEMAP
+  section:
+    - HTML
+    - RSS
+  taxonomy:
+    - HTML
+    - RSS
+  term:
+    - HTML
+    - RSS
+
+sitemap:
+  changefreq: weekly
+  priority: 0.5
+  filename: sitemap.xml

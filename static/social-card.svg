@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#16213e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="80" y="240" font-family="system-ui,-apple-system,sans-serif" font-size="72" font-weight="800" fill="#fff">DuckDB Lab</text>
+  <text x="80" y="320" font-family="system-ui,-apple-system,sans-serif" font-size="36" fill="#3b82f6">把数据变成真金白银</text>
+  <text x="80" y="400" font-family="system-ui,-apple-system,sans-serif" font-size="28" fill="#8899aa" font-weight="300">DuckDB 实战教程 · 性能基准 · 变现指南</text>
+  <rect x="80" y="460" width="200" height="8" rx="4" fill="#3b82f6"/>
+  <text x="80" y="540" font-family="system-ui,-apple-system,sans-serif" font-size="22" fill="#667788">duckdblab.org</text>
+</svg>

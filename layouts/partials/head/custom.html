@@ -1,0 +1,111 @@
+<!-- hreflang 多语言SEO -->
+{{- if .IsTranslated -}}
+  {{- range .Translations -}}
+    <link rel="alternate" hreflang="{{ .Language.Locale }}" href="{{ .Permalink }}">
+  {{- end -}}
+  <link rel="alternate" hreflang="{{ .Language.Locale }}" href="{{ .Permalink }}">
+{{- else -}}
+  {{- if eq .Language.Lang "zh" -}}
+    <link rel="alternate" hreflang="zh-CN" href="{{ .Permalink }}">
+    <link rel="alternate" hreflang="en" href="{{ replaceRE "^/zh/" "/en/" .Permalink }}">
+    <link rel="alternate" hreflang="x-default" href="{{ .Permalink }}">
+  {{- else -}}
+    <link rel="alternate" hreflang="en" href="{{ .Permalink }}">
+    <link rel="alternate" hreflang="zh-CN" href="{{ replaceRE "^/en/" "/zh/" .Permalink }}">
+    <link rel="alternate" hreflang="x-default" href="{{ .Permalink }}">
+  {{- end -}}
+{{- end -}}
+
+<!-- RSS -->
+<link rel="alternate" type="application/rss+xml" href="{{ .Site.BaseURL }}{{ .Language.Lang }}/index.xml" title="{{ .Site.Title }} RSS">
+
+<!-- JSON-LD 结构化数据 -->
+{{- if .IsPage -}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ partial "data/title" . | jsonify }},
+  "description": {{ .Description | default (partial "data/description" .) | jsonify }},
+  "datePublished": "{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}",
+  "dateModified": "{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}",
+  "author": {
+    "@type": "Person",
+    "name": {{ .Site.Params.author | default "Ross Zhang" | jsonify }}
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DuckDB Lab"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ .Permalink }}"
+  },
+  "image": "{{ .Site.BaseURL }}social-card.svg"
+}
+</script>
+{{- else -}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "DuckDB Lab",
+  "url": "{{ .Site.BaseURL }}",
+  "description": {{ .Site.Params.description | jsonify }},
+  "inLanguage": "{{ .Language.Locale }}"
+}
+</script>
+{{- end -}}
+
+<!-- VideoObject Schema for homepage promo video -->
+{{- if .IsHome -}}
+{{ if eq .Language.Lang "zh" }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "DuckDB 实验室 - 数据分析与变现",
+  "description": "DuckDB 实战教程、性能基准测试与变现指南",
+  "thumbnailUrl": "https://duckdblab.org/images/promo-poster-cn.jpg",
+  "contentUrl": "https://duckdblab.org/videos/promo_cn.mp4",
+  "inLanguage": "zh-CN"
+}
+</script>
+{{ else }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "DuckDB Lab - Data Analysis & Monetization",
+  "description": "DuckDB tutorials, benchmarks and monetization guides",
+  "thumbnailUrl": "https://duckdblab.org/images/promo-poster.jpg",
+  "contentUrl": "https://duckdblab.org/videos/promo_en.mp4",
+  "inLanguage": "en-US"
+}
+</script>
+{{ end }}
+{{- end -}}
+
+<!-- 浏览器语言检测 -->
+<script>
+(function() {
+  if (sessionStorage.getItem('lang_redirect_done')) return;
+  sessionStorage.setItem('lang_redirect_done', '1');
+  var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+  var path = window.location.pathname;
+  if (lang.startsWith('zh') && !path.startsWith('/zh/')) {
+    window.location.replace('/zh/' + (path === '/' ? '' : path.substring(1)));
+    return;
+  }
+  if (!lang.startsWith('zh') && path.startsWith('/zh/')) {
+    window.location.replace('/en/' + path.substring(4));
+  }
+})();
+</script>
+
+<!-- Umami Analytics (可选：在 hugo.yaml 配置 params.umami 启用) -->
+{{- with .Site.Params.umami -}}
+{{- if and .serverURL .websiteID -}}
+<script defer src="{{ .serverURL }}/script.js" data-website-id="{{ .websiteID }}"></script>
+{{- end -}}
+{{- end -}}
