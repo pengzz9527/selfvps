@@ -13,7 +13,7 @@ if git remote -v | grep -q origin; then
     echo "📤 Pushing to GitHub..."
     git add -A
     git commit -m "blog: auto-update $(date +%Y-%m-%d)"
-    git push origin master
+    git push origin main
     echo "✅ Deployed!"
 else
     echo "⚠️  No git remote configured."
