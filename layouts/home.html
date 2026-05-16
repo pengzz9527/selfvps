@@ -1,41 +1,15 @@
 {{ define "main" }}
 {{- $lang := .Language.Lang -}}
-
-{{/* VideoObject Schema for homepage promo video */}}
-{{ if eq $lang "zh" }}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "VideoObject",
-  "name": "DuckDB 实验室 - 数据分析与变现",
-  "description": "DuckDB 实战教程、性能基准测试与变现指南",
-  "thumbnailUrl": "https://duckdblab.org/images/promo-poster-cn.jpg",
-  "contentUrl": "https://duckdblab.org/videos/promo_cn.mp4",
-  "inLanguage": "zh-CN"
-}
-</script>
-{{ else }}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "VideoObject",
-  "name": "DuckDB Lab - Data Analysis & Monetization",
-  "description": "DuckDB tutorials, benchmarks and monetization guides",
-  "thumbnailUrl": "https://duckdblab.org/images/promo-poster.jpg",
-  "contentUrl": "https://duckdblab.org/videos/promo_en.mp4",
-  "inLanguage": "en-US"
-}
-</script>
-{{ end }}
+{{- $postCount := len (where .Site.RegularPages "Section" "post") -}}
 
 {{/* ==================== ZH Content ==================== */}}
 {{- if eq $lang "zh" -}}
 
 <div class="hero-section">
-  <h1 class="hero-title">把数据变成真金白银 🚀</h1>
+  <h1 class="hero-title">用 VPS 省下 80% 云费用 🚀</h1>
   <p class="hero-subtitle">
-    DuckDB 实战教程 · 性能基准测试 · 数据分析变现指南<br>
-    用技术能力打造被动收入，数据人的第二曲线从这里开始
+    自托管开源工具 · 云服务省钱攻略 · VPS 运维实战<br>
+    少花钱，多掌控——自己管服务器，比 SaaS 省 80%
   </p>
   <div class="hero-cta">
     <a href="/zh/post/" class="btn btn-primary">📖 浏览全部文章</a>
@@ -43,86 +17,75 @@
   </div>
 </div>
 
-{{/* ==================== Promo Video ==================== */}}
-<div class="promo-video-section">
-  <div class="promo-video-wrapper">
-    <video class="promo-video" autoplay muted loop playsinline
-           poster="/images/promo-poster-cn.jpg"
-           preload="metadata"
-           src="/videos/promo_cn.mp4">
-    </video>
-  </div>
-</div>
-
 <div class="stats-bar">
   <div class="stats-item">
-    <div class="stats-number">{{ len (where .Site.RegularPages "Section" "post") }}+</div>
-    <div class="stats-label">深度教程</div>
+    <div class="stats-number">{{ $postCount }}+</div>
+    <div class="stats-label">实战教程</div>
   </div>
   <div class="stats-item">
-    <div class="stats-number">100k+</div>
-    <div class="stats-label">数据行处理</div>
+    <div class="stats-number">50%+</div>
+    <div class="stats-label">平均省钱幅度</div>
   </div>
   <div class="stats-item">
-    <div class="stats-number">4+</div>
-    <div class="stats-label">变现方向</div>
+    <div class="stats-number">20+</div>
+    <div class="stats-label">开源工具推荐</div>
   </div>
 </div>
 
-{{/* ==================== About this blog ==================== */}}
+{{/* ==================== About ==================== */}}
 <div class="about-section">
-  <h2>🔍 DuckDB 实验室是什么？</h2>
-  <p><strong>DuckDB 实验室</strong> 是一个专注于 <strong>DuckDB 数据库</strong> 实战的中文技术博客。我们提供从入门到进阶的 DuckDB 教程，覆盖数据分析、ETL 数据清洗、性能基准测试等场景。与传统数据库教程不同，我们还重点分享 <strong>基于 DuckDB 的技术变现</strong> 策略——帮你把数据分析能力变成真金白银。</p>
-  <p>DuckDB 是一个嵌入式列式数据库，专为 <strong>在线分析处理 (OLAP)</strong> 设计。它比 Pandas 快 3-10 倍，比 SQLite 分析能力强 10 倍，同时不需要像 Snowflake 那样复杂的集群架构。无论是处理 GB 级别的 CSV 文件，还是构建数据管道，DuckDB 都能让你的工作效率大幅提升。</p>
+  <h2>🔍 SelfVPS 指南是什么？</h2>
+  <p><strong>SelfVPS 指南</strong> 是一个专注于 <strong>VPS 自托管</strong>和<strong>云服务省钱</strong>的中英文技术博客。我们提供从零开始的服务器部署教程、开源工具自托管方案、以及各大云厂商的省钱技巧。</p>
+  <p>无论是用 Docker 部署 <strong>N8N</strong> 工作流引擎、<strong>Vaultwarden</strong> 密码管理器、<strong>Uptime Kuma</strong> 监控面板，还是在 VPS 上搭建私有 <strong>Ollama / LocalAI</strong> 服务，我们都提供一步步的实战指南。同时对比 AWS、阿里云、Hetzner、Vultr 等云服务商的真实价格，帮你选出最划算的方案。</p>
 </div>
 
 {{/* ==================== Value Grid ==================== */}}
 <div class="value-grid">
   <div class="value-card">
-    <span class="icon">📘</span>
-    <h3>实战教程</h3>
-    <p>从零开始学 DuckDB，涵盖数据分析、ETL、大数据处理等真实业务场景，上手即用</p>
-  </div>
-  <div class="value-card">
-    <span class="icon">⚡</span>
-    <h3>性能基准</h3>
-    <p>DuckDB vs Pandas/Polars/SQLite 实测对比，用数据说话，帮你做工具选型决策</p>
+    <span class="icon">🐳</span>
+    <h3>自托管部署</h3>
+    <p>Docker Compose 一键部署 N8N、Vaultwarden、Affine、Uptime Kuma 等热门开源工具</p>
   </div>
   <div class="value-card">
     <span class="icon">💰</span>
-    <h3>变现指南</h3>
-    <p>技术变现的完整方法论：数据分析服务、自动化报表、SaaS 工具、内容变现全攻略</p>
+    <h3>云省钱攻略</h3>
+    <p>真实 VPS 价格对比、云服务选型指南、CDN 省钱策略、带宽优化技巧</p>
   </div>
   <div class="value-card">
-    <span class="icon">🛠️</span>
-    <h3>最佳实践</h3>
-    <p>生产环境部署、性能优化、常见坑点，让 DuckDB 真正在你的项目中落地</p>
+    <span class="icon">🤖</span>
+    <h3>AI 自部署</h3>
+    <p>用 Ollama、LocalAI、ComfyUI 在 VPS 上搭建私有 AI 服务，数据不出服务器</p>
+  </div>
+  <div class="value-card">
+    <span class="icon">🔒</span>
+    <h3>运维安全</h3>
+    <p>域名 + SSL 配置、防火墙加固、自动备份、监控告警、安全最佳实践</p>
   </div>
 </div>
 
 {{/* ==================== Monetization Path ==================== */}}
 <div class="monetize-section">
-  <h2>💡 你的变现路径</h2>
+  <h2>💡 自托管变现路径</h2>
   <div class="monetize-grid">
     <div class="monetize-item">
       <div class="step">1</div>
-      <h4>学技术</h4>
-      <p>掌握 DuckDB + Python，成为数据分析高手</p>
+      <h4>省成本</h4>
+      <p>自托管替代 SaaS，一年省下几千到几万订阅费</p>
     </div>
     <div class="monetize-item">
       <div class="step">2</div>
-      <h4>做项目</h4>
-      <p>构建数据看板、自动化报表、分析工具</p>
+      <h4>攒技能</h4>
+      <p>掌握 Docker/Linux/网络，成为高薪 DevOps 人才</p>
     </div>
     <div class="monetize-item">
       <div class="step">3</div>
-      <h4>接业务</h4>
-      <p>数据分析咨询、定制开发、培训课程</p>
+      <h4>做服务</h4>
+      <p>帮企业自部署工具、搭建私有云，收取运维服务费</p>
     </div>
     <div class="monetize-item">
       <div class="step">4</div>
-      <h4>建系统</h4>
-      <p>打造 SaaS 工具或数字产品，躺着赚钱</p>
+      <h4>建产品</h4>
+      <p>基于开源工具封装行业方案，打造可复用的 SaaS 产品</p>
     </div>
   </div>
 </div>
@@ -135,32 +98,31 @@
   {{- end -}}
 </section>
 
-{{/* ==================== DuckDB FAQ ==================== */}}
+{{/* ==================== SelfVPS FAQ ==================== */}}
 <div class="faq-section">
-  <h2>❓ DuckDB 常见问题</h2>
+  <h2>❓ 自托管常见问题</h2>
   <div class="faq-item">
-    <h3>DuckDB 适合什么场景？</h3>
-    <p>DuckDB 最适合<strong>分析型查询</strong>场景：数据探索、ETL 管道、大规模 CSV/Parquet 文件处理、嵌入式 BI 报表。它不适合 OLTP 场景（如高并发事务处理），那是 SQLite/PostgreSQL 的领域。</p>
+    <h3>自托管需要什么技术基础？</h3>
+    <p>基本的 Linux 命令行使用即可。如果你会用 cd、ls、vim，就能跟着我们的教程完成部署。每个步骤都有详细的命令和截图指引。</p>
   </div>
   <div class="faq-item">
-    <h3>DuckDB 和 Pandas 哪个快？</h3>
-    <p>在 1GB 以上数据集上，DuckDB 通常比 Pandas <strong>快 3-10 倍</strong>，并且内存使用更少。这是因为 DuckDB 的列式存储和向量化执行引擎在处理大规模数据时具有天然优势。</p>
+    <h3>一台 VPS 能跑多少个服务？</h3>
+    <p>1 核 2GB 的入门 VPS 就能同时运行 <strong>5-8 个 Docker 容器</strong>（如 N8N + Vaultwarden + Uptime Kuma + Nginx + PostgreSQL）。2 核 4GB 能跑 15+ 个服务，完全够个人或小团队使用。</p>
   </div>
   <div class="faq-item">
-    <h3>用 DuckDB 怎么赚钱？</h3>
-    <p>常见的 DuckDB 变现方式包括：① 为企业提供数据清洗和分析服务 ② 构建自动化报表系统 ③ 开发数据分析 SaaS 工具 ④ 制作 DuckDB 培训课程和内容。具体可查看我们的 <a href="/zh/post/">变现指南系列</a>。</p>
+    <h3>自托管比 SaaS 真的省钱吗？</h3>
+    <p><strong>一年省 80% 不是梦</strong>。以密码管理器为例：1Password 家庭版 $60/年，自托管 Vaultwarden 用 $5/月的 VPS 跑 10 个服务，均摊每个服务每月才 $0.5。一个服务就回本了。</p>
   </div>
   <div class="faq-item">
-    <h3>DuckDB 能处理多大数据量？</h3>
-    <p>DuckDB 的单机性能可以轻松处理 <strong>10GB-100GB</strong> 级别的数据。配合 Parquet 格式和分区技术，也能高效分析 TB 级数据。对于大多数中小企业的数据分析需求，DuckDB 完全够用。</p>
+    <h3>最推荐的入门 VPS 是哪家？</h3>
+    <p><strong>Hetzner</strong>（欧洲）性价比最高，$4/月 2 核 4GB。国内用户选 <strong>阿里云轻量</strong>（香港节点），$5.5/月免备案。追求简单选 <strong>DigitalOcean</strong>，$6/月起步，文档完善。</p>
   </div>
 </div>
 
-{{/* ==================== Newsletter ==================== */}}
 <div class="newsletter-cta">
   <h2>📬 订阅更新</h2>
-  <p>每篇文章都是基于实战的干货，不灌水、不废话。订阅后第一时间收到最新内容。</p>
-  <a href="mailto:admin@duckdblab.org?subject=订阅 DuckDB 实验室" class="btn">📧 订阅 Updates</a>
+  <p>每篇文章都基于实战经验，不灌水、不废话。订阅后收到最新自托管教程和省钱攻略。</p>
+  <a href="/zh/newsletter/" class="btn">📧 免费订阅</a>
 </div>
 
 {{- else -}}
@@ -168,10 +130,10 @@
 {{/* ==================== EN Content ==================== */}}
 
 <div class="hero-section">
-  <h1 class="hero-title">Turn Data Into Real Money 🚀</h1>
+  <h1 class="hero-title">Slash Your Cloud Bill by 80% 🚀</h1>
   <p class="hero-subtitle">
-    DuckDB tutorials · Performance benchmarks · Data monetization guides<br>
-    Build passive income with technical skills — your second curve starts here
+    Self-hosted open-source tools · Cloud cost-saving guides · VPS operations<br>
+    Pay less, own more — self-hosting beats SaaS by 80%
   </p>
   <div class="hero-cta">
     <a href="/en/post/" class="btn btn-primary">📖 Browse All Posts</a>
@@ -179,89 +141,76 @@
   </div>
 </div>
 
-{{/* ==================== Promo Video ==================== */}}
-<div class="promo-video-section">
-  <div class="promo-video-wrapper">
-    <video class="promo-video" autoplay muted loop playsinline
-           poster="/images/promo-poster.jpg"
-           preload="metadata"
-           src="/videos/promo_en.mp4">
-    </video>
-  </div>
-</div>
-
 <div class="stats-bar">
   <div class="stats-item">
-    <div class="stats-number">{{ len (where .Site.RegularPages "Section" "post") }}+</div>
-    <div class="stats-label">Deep Tutorials</div>
+    <div class="stats-number">{{ $postCount }}+</div>
+    <div class="stats-label">Hands-On Tutorials</div>
   </div>
   <div class="stats-item">
-    <div class="stats-number">100k+</div>
-    <div class="stats-label">Rows Processed</div>
+    <div class="stats-number">50%+</div>
+    <div class="stats-label">Average Savings</div>
   </div>
   <div class="stats-item">
-    <div class="stats-number">4+</div>
-    <div class="stats-label">Monetization Paths</div>
+    <div class="stats-number">20+</div>
+    <div class="stats-label">Open-Source Tools</div>
   </div>
 </div>
 
-{{/* ==================== About ==================== */}}
 <div class="about-section">
-  <h2>🔍 What is DuckDB Lab?</h2>
-  <p><strong>DuckDB Lab</strong> is a technical blog focused on <strong>DuckDB</strong> — the embedded columnar database designed for <strong>Online Analytical Processing (OLAP)</strong>. We provide hands-on tutorials covering data analysis, ETL pipelines, and performance benchmarks. What sets us apart is our focus on <strong>DuckDB monetization</strong>: we show you how to turn your data analysis skills into real income.</p>
-  <p>DuckDB is 3-10x faster than Pandas for large datasets, offers 10x the analytical power of SQLite, and doesn't require complex cluster infrastructure like Snowflake. Whether you're processing multi-GB CSV files or building data pipelines, DuckDB makes you dramatically more productive.</p>
+  <h2>🔍 What is SelfVPS Guide?</h2>
+  <p><strong>SelfVPS Guide</strong> is a bilingual tech blog focused on <strong>VPS self-hosting</strong> and <strong>cloud cost optimization</strong>. We provide step-by-step deployment tutorials, open-source tool hosting guides, and real-world comparisons of major cloud providers.</p>
+  <p>Whether you're deploying <strong>N8N</strong> workflow automation, <strong>Vaultwarden</strong> password manager, <strong>Uptime Kuma</strong> monitoring, or setting up <strong>Ollama / LocalAI</strong> on your own server — we've got you covered. We also compare pricing across AWS, Hetzner, DigitalOcean, Vultr, and Alibaba Cloud to help you find the best value VPS.</p>
 </div>
 
 <div class="value-grid">
   <div class="value-card">
-    <span class="icon">📘</span>
-    <h3>Tutorials</h3>
-    <p>Learn DuckDB from scratch — data analysis, ETL, big data processing with real-world scenarios</p>
-  </div>
-  <div class="value-card">
-    <span class="icon">⚡</span>
-    <h3>Benchmarks</h3>
-    <p>DuckDB vs Pandas/Polars/SQLite — data-driven comparisons to help you choose the right tool</p>
+    <span class="icon">🐳</span>
+    <h3>Self-Hosted Tools</h3>
+    <p>One-click Docker Compose deployments for N8N, Vaultwarden, Affine, Uptime Kuma and more</p>
   </div>
   <div class="value-card">
     <span class="icon">💰</span>
-    <h3>Monetization</h3>
-    <p>Complete playbook: data analysis services, automated reports, SaaS tools, content monetization</p>
+    <h3>Cloud Savings</h3>
+    <p>Real VPS price comparisons, cost optimization strategies, CDN savings & bandwidth tuning</p>
   </div>
   <div class="value-card">
-    <span class="icon">🛠️</span>
-    <h3>Best Practices</h3>
-    <p>Production deployment, performance tuning, common pitfalls — make DuckDB work for you</p>
+    <span class="icon">🤖</span>
+    <h3>AI Self-Hosting</h3>
+    <p>Run Ollama, LocalAI, ComfyUI on your VPS — private AI inference with zero data leaks</p>
+  </div>
+  <div class="value-card">
+    <span class="icon">🔒</span>
+    <h3>DevOps & Security</h3>
+    <p>SSL setup, firewall hardening, automated backups, monitoring alerts & security best practices</p>
   </div>
 </div>
 
 <div class="monetize-section">
-  <h2>💡 Your Monetization Path</h2>
+  <h2>💡 Monetize Your VPS Skills</h2>
   <div class="monetize-grid">
     <div class="monetize-item">
       <div class="step">1</div>
-      <h4>Learn</h4>
-      <p>Master DuckDB + Python to become a data analysis pro</p>
+      <h4>Save Costs</h4>
+      <p>Replace expensive SaaS with self-hosted — save thousands per year</p>
     </div>
     <div class="monetize-item">
       <div class="step">2</div>
-      <h4>Build</h4>
-      <p>Create dashboards, automated reports, and analysis tools</p>
+      <h4>Build Skills</h4>
+      <p>Master Docker, Linux & networking — become a high-value DevOps engineer</p>
     </div>
     <div class="monetize-item">
       <div class="step">3</div>
-      <h4>Sell</h4>
-      <p>Consulting, custom development, training courses</p>
+      <h4>Offer Services</h4>
+      <p>Help businesses deploy self-hosted tools, build private clouds</p>
     </div>
     <div class="monetize-item">
       <div class="step">4</div>
-      <h4>Scale</h4>
-      <p>Launch SaaS tools or digital products for recurring income</p>
+      <h4>Build Products</h4>
+      <p>Package open-source tools into industry solutions, create SaaS products</p>
     </div>
   </div>
 </div>
 
-{{/* ==================== Featured Articles ==================== */}}
 <h2 class="section-title">🔥 Featured Posts</h2>
 <section class="article-list">
   {{- range first 3 (where .Site.RegularPages "Section" "post") -}}
@@ -269,31 +218,30 @@
   {{- end -}}
 </section>
 
-{{/* ==================== DuckDB FAQ ==================== */}}
 <div class="faq-section">
-  <h2>❓ DuckDB FAQ</h2>
+  <h2>❓ Self-Hosting FAQ</h2>
   <div class="faq-item">
-    <h3>What is DuckDB best for?</h3>
-    <p><strong>Analytical querying</strong> — data exploration, ETL pipelines, large CSV/Parquet processing, embedded BI. It's not designed for OLTP workloads (high-concurrency transactions) — that's SQLite/PostgreSQL territory.</p>
+    <h3>What technical skills do I need?</h3>
+    <p>Basic Linux command-line skills (cd, ls, vim) are enough. Every tutorial includes exact commands you can copy-paste.</p>
   </div>
   <div class="faq-item">
-    <h3>DuckDB vs Pandas: which is faster?</h3>
-    <p>On datasets over 1GB, DuckDB is typically <strong>3-10x faster</strong> than Pandas while using less memory. DuckDB's columnar storage and vectorized execution engine give it a significant advantage for large-scale data analysis.</p>
+    <h3>How many services can one VPS run?</h3>
+    <p>A 1 vCPU / 2GB RAM VPS can run <strong>5-8 Docker containers</strong> (N8N + Vaultwarden + Uptime Kuma + Nginx + PostgreSQL). 2 vCPU / 4GB handles 15+ services easily.</p>
   </div>
   <div class="faq-item">
-    <h3>How can I make money with DuckDB?</h3>
-    <p>Common approaches include: ① Data cleaning and analysis services for businesses ② Building automated reporting systems ③ Developing data analytics SaaS tools ④ Creating DuckDB training courses and content. Check our <a href="/en/post/">monetization guides</a> for details.</p>
+    <h3>Is self-hosting really cheaper than SaaS?</h3>
+    <p><strong>80% savings are realistic</strong>. Example: 1Password family costs $60/year. Self-hosted Vaultwarden on a $5/month VPS sharing 10 services costs ~$0.50/service/month. One service alone pays for the server.</p>
   </div>
   <div class="faq-item">
-    <h3>How much data can DuckDB handle?</h3>
-    <p>DuckDB handles <strong>10GB-100GB</strong> datasets comfortably on a single machine. With Parquet format and partitioning, it can efficiently process TB-scale data. For most SMB analytics needs, DuckDB is more than sufficient.</p>
+    <h3>Which VPS provider should I start with?</h3>
+    <p><strong>Hetzner</strong> offers the best value ($4/mo for 2 vCPU / 4GB). For US users: <strong>DigitalOcean</strong> ($6/mo) with great docs. Asian users: <strong>Alibaba Cloud</strong> HK node (no ICP needed).</p>
   </div>
 </div>
 
 <div class="newsletter-cta">
   <h2>📬 Stay Updated</h2>
-  <p>Every article is battle-tested — no fluff, no filler. Subscribe to get the latest straight to your inbox.</p>
-  <a href="mailto:admin@duckdblab.org?subject=Subscribe DuckDB Lab" class="btn">📧 Subscribe</a>
+  <p>Every article is battle-tested — no fluff, no filler. Get the latest self-hosting tutorials and cloud savings straight to your inbox.</p>
+  <a href="/en/newsletter/" class="btn">📧 Subscribe Free</a>
 </div>
 
 {{- end -}}
