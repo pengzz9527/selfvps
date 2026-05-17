@@ -52,6 +52,10 @@ languages:
           name: "关于"
           url: "/zh/about/"
           weight: 60
+        - identifier: contact
+          name: "联系"
+          url: "/zh/contact/"
+          weight: 70
 
   en:
     contentDir: "content/en"
