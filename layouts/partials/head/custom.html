@@ -1,31 +1,59 @@
 <style>
-/* 标题字体与正文一致，正文加大 */
+/* ===== 字体统一切换：使用系统字体（中英文一致） ===== */
 :root {
     --base-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
-    --article-font-size: 1.85rem;
-    --article-line-height: 1.9;
 }
 
-/* 标题不要粗体加重的独立样式 */
+body {
+    font-family: var(--base-font-family);
+    font-size: 1.8rem !important;
+}
+
+/* 标题字体与正文一致，整体加大 */
 h1, h2, h3, h4, h5, h6 {
+    font-family: var(--base-font-family) !important;
     font-weight: 600;
     letter-spacing: 0.02em;
 }
 
-/* 文章内正文加大 */
-.article-content p,
-.article-content li {
-    font-size: 1.85rem;
-    line-height: 1.9;
+h1 { font-size: 2.8rem !important; }
+h2 { font-size: 2.4rem !important; }
+h3 { font-size: 2.0rem !important; }
+h4 { font-size: 1.8rem !important; }
+
+/* 文章内正文 */
+:root {
+    --article-font-size: 1.85rem;
+    --article-line-height: 1.9;
 }
 
+.article-content {
+    font-family: var(--base-font-family) !important;
+    font-size: 1.85rem !important;
+    line-height: 1.9 !important;
+}
+.article-content p,
+.article-content li {
+    font-size: 1.85rem !important;
+    line-height: 1.9 !important;
+}
+
+/* 侧边栏、菜单字体统一 */
+.sidebar, .menu, .widget, .widget *,
+.card, .card *,
+.article-list, .article-list * {
+    font-family: var(--base-font-family) !important;
+}
+
+/* 桌面端更大 */
 @media (min-width: 768px) {
-    :root {
-        --article-font-size: 1.95rem;
-    }
-    .article-content p,
-    .article-content li {
-        font-size: 1.95rem;
-    }
+    body { font-size: 2.0rem !important; }
+    h1 { font-size: 3.0rem !important; }
+    h2 { font-size: 2.6rem !important; }
+    h3 { font-size: 2.2rem !important; }
+    h4 { font-size: 2.0rem !important; }
+    :root { --article-font-size: 1.95rem; }
+    .article-content { font-size: 1.95rem !important; }
+    .article-content p, .article-content li { font-size: 1.95rem !important; }
 }
 </style>
