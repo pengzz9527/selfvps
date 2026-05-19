@@ -65,7 +65,7 @@ Python/Go 后端开发，专注数据自动化和 AI 工具落地。
 
 ## 联系
 
-- Telegram: @Ross_Zhang
+- Telegram: @peng2502
 - GitHub: [pengzz9527](https://github.com/pengzz9527)
 
 ## 部分历史项目
