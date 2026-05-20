@@ -95,7 +95,8 @@
 /* About Section */
 .about-section {
   margin-bottom: 1.5rem;
-  line-height: 1.7;
+  line-height: 1.8;
+  font-size: 1.05rem;
 }
 
 /* Value Grid */
@@ -255,15 +256,15 @@
 }
 
 .faq-item h3 {
-  font-size: 1rem;
+  font-size: 1.1rem;
   margin-bottom: 0.3rem;
   cursor: pointer;
 }
 
 .faq-item p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #555;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 [data-scheme="dark"] .faq-item p {
