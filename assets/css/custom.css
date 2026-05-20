@@ -129,14 +129,14 @@
 }
 
 .value-card h3 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin-bottom: 0.5rem;
 }
 
 .value-card p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #666;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 [data-scheme="dark"] .value-card p {
@@ -223,12 +223,12 @@
 }
 
 .monetize-item h4 {
-  font-size: 1rem;
+  font-size: 1.1rem;
   margin-bottom: 0.3rem;
 }
 
 .monetize-item p {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: #666;
 }
 
