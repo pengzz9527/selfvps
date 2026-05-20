@@ -6,14 +6,14 @@
 {{- if eq $lang "zh" -}}
 
 <div class="hero-section">
-  <h1 class="hero-title">用 VPS 省下 80% 云费用 🚀</h1>
+  <h1 class="hero-title">省下 80% 云费用，自己管服务器 🚀</h1>
   <p class="hero-subtitle">
-    自托管开源工具 · 云服务省钱攻略 · VPS 运维实战<br>
-    少花钱，多掌控——自己管服务器，比 SaaS 省 80%
+    自托管 N8N/Vaultwarden/Ollama 实战教程 · 云服务省钱对比<br>
+    $4/月的 VPS 能跑 8 个服务——少花钱，多掌控
   </p>
   <div class="hero-cta">
-    <a href="/zh/post/" class="btn btn-primary">📖 浏览全部文章</a>
-    <a href="/zh/about/" class="btn btn-secondary">了解更多 →</a>
+    <a href="/zh/post/" class="btn btn-primary">📖 浏览全部教程</a>
+    <a href="/zh/post/vps-cost-saving-guide/" class="btn btn-secondary">先看省钱攻略 →</a>
   </div>
 </div>
 
@@ -90,13 +90,44 @@
   </div>
 </div>
 
-{{/* ==================== Featured Articles ==================== */}}
+ {{/* ==================== Featured Articles ==================== */}}
 <h2 class="section-title">🔥 热门推荐</h2>
 <section class="article-list">
-  {{- range first 3 (where .Site.RegularPages "Section" "post") -}}
+  {{- range first 6 (where .Site.RegularPages "Section" "post") -}}
     {{ partial "article-list/default" . }}
   {{- end -}}
 </section>
+
+{{/* ==================== Quick Links ==================== */}}
+<div class="quick-links">
+  <h2>⚡ 快速上手</h2>
+  <div class="quick-grid">
+    <a href="/zh/post/n8n-deployment-guide/" class="quick-card">
+      <span class="icon">⚙️</span>
+      <span class="text">N8N 部署</span>
+    </a>
+    <a href="/zh/post/vaultwarden-deployment-guide/" class="quick-card">
+      <span class="icon">🔑</span>
+      <span class="text">密码管理器</span>
+    </a>
+    <a href="/zh/post/traefik-docker-reverse-proxy/" class="quick-card">
+      <span class="icon">🔄</span>
+      <span class="text">Traefik 反代</span>
+    </a>
+    <a href="/zh/post/vps-cost-saving-guide/" class="quick-card">
+      <span class="icon">💰</span>
+      <span class="text">VPS 省钱对比</span>
+    </a>
+    <a href="/zh/post/harbor-ai-stack-deployment/" class="quick-card">
+      <span class="icon">🤖</span>
+      <span class="text">AI 部署栈</span>
+    </a>
+    <a href="/zh/post/deploy-khoj-ai-second-brain-vps/" class="quick-card">
+      <span class="icon">🧠</span>
+      <span class="text">Khoj 第二大脑</span>
+    </a>
+  </div>
+</div>
 
 {{/* ==================== SelfVPS FAQ ==================== */}}
 <div class="faq-section">
@@ -132,12 +163,12 @@
 <div class="hero-section">
   <h1 class="hero-title">Slash Your Cloud Bill by 80% 🚀</h1>
   <p class="hero-subtitle">
-    Self-hosted open-source tools · Cloud cost-saving guides · VPS operations<br>
-    Pay less, own more — self-hosting beats SaaS by 80%
+    Self-host N8N, Vaultwarden, Ollama · Cloud cost comparison guides<br>
+    A $4/month VPS runs 8 services — pay less, own more
   </p>
   <div class="hero-cta">
-    <a href="/en/post/" class="btn btn-primary">📖 Browse All Posts</a>
-    <a href="/en/about/" class="btn btn-secondary">Learn More →</a>
+    <a href="/en/post/" class="btn btn-primary">📖 Browse All Tutorials</a>
+    <a href="/en/post/vps-cost-saving-guide/" class="btn btn-secondary">Start Saving →</a>
   </div>
 </div>
 
@@ -213,10 +244,41 @@
 
 <h2 class="section-title">🔥 Featured Posts</h2>
 <section class="article-list">
-  {{- range first 3 (where .Site.RegularPages "Section" "post") -}}
+  {{- range first 6 (where .Site.RegularPages "Section" "post") -}}
     {{ partial "article-list/default" . }}
   {{- end -}}
 </section>
+
+{{/* ==================== EN Quick Links ==================== */}}
+<div class="quick-links">
+  <h2>⚡ Quick Start</h2>
+  <div class="quick-grid">
+    <a href="/en/post/n8n-deployment-guide/" class="quick-card">
+      <span class="icon">⚙️</span>
+      <span class="text">N8N Deploy</span>
+    </a>
+    <a href="/en/post/vaultwarden-deployment-guide/" class="quick-card">
+      <span class="icon">🔑</span>
+      <span class="text">Password Manager</span>
+    </a>
+    <a href="/en/post/traefik-docker-reverse-proxy/" class="quick-card">
+      <span class="icon">🔄</span>
+      <span class="text">Traefik Proxy</span>
+    </a>
+    <a href="/en/post/vps-cost-saving-guide/" class="quick-card">
+      <span class="icon">💰</span>
+      <span class="text">VPS Cost Savings</span>
+    </a>
+    <a href="/en/post/harbor-ai-stack-deployment/" class="quick-card">
+      <span class="icon">🤖</span>
+      <span class="text">AI Stack Deploy</span>
+    </a>
+    <a href="/en/post/deploy-khoj-ai-second-brain-vps/" class="quick-card">
+      <span class="icon">🧠</span>
+      <span class="text">Khoj Brain</span>
+    </a>
+  </div>
+</div>
 
 <div class="faq-section">
   <h2>❓ Self-Hosting FAQ</h2>

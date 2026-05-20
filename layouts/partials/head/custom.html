@@ -1,4 +1,10 @@
 <!-- hreflang 多语言SEO -->
+{{- $customCss := resources.Get "css/custom.css" -}}
+{{- if $customCss -}}
+  {{- $customCss = $customCss | resources.Minify | resources.Fingerprint -}}
+  <link rel="stylesheet" href="{{ $customCss.RelPermalink }}">
+{{- end -}}
+
 {{- if .IsTranslated -}}
   {{- range .Translations -}}
     <link rel="alternate" hreflang="{{ .Language.Locale }}" href="{{ .Permalink }}">
