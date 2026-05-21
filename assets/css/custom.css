@@ -259,15 +259,15 @@
 }
 
 .faq-item h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.4rem;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
   cursor: pointer;
 }
 
 .faq-item p {
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   color: #555;
-  line-height: 1.7;
+  line-height: 1.8;
 }
 
 [data-scheme="dark"] .faq-item p {
