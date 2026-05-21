@@ -113,6 +113,7 @@ mainSections:
 params:
   author: "Ross Zhang"
   description: "开源项目自托管教程、云服务省钱指南、VPS 运维实战"
+  favicon: "favicon.png"
 
   # Umami Analytics — will update websiteID after creating
   umami:
