@@ -197,15 +197,15 @@
 
 .monetize-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
 }
 
 .monetize-item {
   text-align: center;
-  padding: 1rem;
+  padding: 1.5rem 1.2rem;
   background: #f8f9fa;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 [data-scheme="dark"] .monetize-item {
@@ -213,24 +213,27 @@
 }
 
 .monetize-item .step {
-  width: 36px;
-  height: 36px;
-  line-height: 36px;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
   border-radius: 50%;
   background: #4f46e5;
   color: white;
   font-weight: 700;
-  margin: 0 auto 0.5rem;
+  font-size: 1.2rem;
+  margin: 0 auto 0.8rem;
+  display: block;
 }
 
 .monetize-item h4 {
-  font-size: 1.1rem;
-  margin-bottom: 0.3rem;
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
 }
 
 .monetize-item p {
-  font-size: 0.95rem;
+  font-size: 1.15rem;
   color: #666;
+  line-height: 1.6;
 }
 
 [data-scheme="dark"] .monetize-item p {
