@@ -1,0 +1,22 @@
+<!-- Use site subtitle by default -->
+{{ $description := .Site.Params.sidebar.subtitle }}
+
+<!-- Language-specific description first -->
+{{ if .Site.Language.Params.description }}
+    {{ $description = .Site.Language.Params.description }}
+{{ end }}
+
+<!-- Seprate description exists -->
+{{ if .Site.Params.description }}
+    {{ $description = .Site.Params.description }}
+{{ end }}
+
+{{ if .Description }}
+    <!-- Page description exists -->
+    {{ $description = .Description }}
+{{ else if .IsPage }}
+    <!-- Use page summary -->
+    {{ $description = .Summary }}
+{{ end }}
+
+{{ return (replaceRE "\n" " " $description | plainify) }}

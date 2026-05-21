@@ -18,6 +18,7 @@ languages:
     params:
       sidebar:
         subtitle: "开源项目自托管 · 云服务省钱 · VPS 运维实战"
+      description: "开源项目自托管教程、云服务省钱指南、VPS 运维实战"
     menu:
       main:
         - identifier: home
@@ -67,6 +68,7 @@ languages:
     params:
       sidebar:
         subtitle: "Self-hosted tools · Cloud savings · VPS guides"
+      description: "Self-hosted open-source tools, cloud cost-saving tips & VPS deployment guides"
     menu:
       main:
         - identifier: home
