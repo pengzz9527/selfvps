@@ -110,7 +110,7 @@
 .value-card {
   background: #f8f9fa;
   border-radius: 10px;
-  padding: 1.5rem;
+  padding: 1.8rem 1.5rem;
   text-align: center;
   transition: transform 0.2s;
 }
@@ -124,20 +124,20 @@
 }
 
 .value-card .icon {
-  font-size: 2rem;
+  font-size: 2.4rem;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
 }
 
 .value-card h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.6rem;
+  margin-bottom: 0.6rem;
 }
 
 .value-card p {
-  font-size: 1rem;
+  font-size: 1.15rem;
   color: #666;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 [data-scheme="dark"] .value-card p {
