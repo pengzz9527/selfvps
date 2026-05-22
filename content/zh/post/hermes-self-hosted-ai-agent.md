@@ -5,6 +5,7 @@ date: 2026-05-22T18:00:00+08:00
 slug: "hermes-self-hosted-ai-agent"
 tags: ["Hermes Agent", "AI Agent", "自托管", "VPS部署", "开源", "隐私", "Telegram"]
 categories: ["AI部署"]
+image: /images/posts/hermes-self-hosted-ai-agent/featured.png
 draft: false
 ---
 
