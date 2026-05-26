@@ -10,11 +10,12 @@
     <link rel="alternate" hreflang="{{ .Language.Locale }}" href="{{ .Permalink }}">
   {{- end -}}
   <link rel="alternate" hreflang="{{ .Language.Locale }}" href="{{ .Permalink }}">
+  <link rel="alternate" hreflang="x-default" href="{{ .Permalink }}">
 {{- else -}}
   {{- if eq .Language.Lang "zh" -}}
     <link rel="alternate" hreflang="zh-CN" href="{{ .Permalink }}">
     <link rel="alternate" hreflang="en" href="{{ replaceRE "^/zh/" "/en/" .Permalink }}">
-    <link rel="alternate" hreflang="x-default" href="{{ .Permalink }}">
+    <link rel="alternate" hreflang="x-default" href="{{ replaceRE "^/zh/" "/en/" .Permalink }}">
   {{- else -}}
     <link rel="alternate" hreflang="en" href="{{ .Permalink }}">
     <link rel="alternate" hreflang="zh-CN" href="{{ replaceRE "^/en/" "/zh/" .Permalink }}">
