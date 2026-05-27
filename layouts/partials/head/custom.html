@@ -64,22 +64,15 @@
 </script>
 {{- end -}}
 
-<!-- 浏览器语言检测 -->
-<script>
-(function() {
-  if (sessionStorage.getItem('lang_redirect_done')) return;
-  sessionStorage.setItem('lang_redirect_done', '1');
-  var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-  var path = window.location.pathname;
-  if (lang.startsWith('zh') && !path.startsWith('/zh/')) {
-    window.location.replace('/zh/' + (path === '/' ? '' : path.substring(1)));
-    return;
-  }
-  if (!lang.startsWith('zh') && path.startsWith('/zh/')) {
-    window.location.replace('/en/' + path.substring(4));
-  }
-})();
-</script>
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ .Permalink }}">
+
+<!-- 禁止索引分类/标签/搜索等列表页面 -->
+{{- if or .IsHome (eq .Kind "taxonomy") (eq .Kind "term") (eq .Kind "section") (in .RelPermalink "/search/") (in .RelPermalink "/page/") }}
+{{- if not .IsHome }}
+<meta name="robots" content="noindex, follow">
+{{- end }}
+{{- end }}
 
 <!-- Umami Analytics (可选：在 hugo.yaml 配置 params.umami 启用) -->
 {{- with .Site.Params.umami -}}

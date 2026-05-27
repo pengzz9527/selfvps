@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   {{- range .Site.Pages }}
-  {{- if and .Permalink (not (in .RelPermalink "/page/")) }}
+  {{- if and .Permalink (not (in .RelPermalink "/page/")) (not (in .RelPermalink "/categories/")) (not (in .RelPermalink "/tags/")) (not (in .RelPermalink "/search/")) (not (in .RelPermalink "/about/")) (not (in .RelPermalink "/contact/")) (not (in .RelPermalink "/terms/")) (not (in .RelPermalink "/privacy/")) (not (in .RelPermalink "/cheatsheet/")) (not (in .RelPermalink "/newsletter/")) }}
   <url>
     <loc>{{ .Permalink }}</loc>
     {{- if not .Lastmod.IsZero }}

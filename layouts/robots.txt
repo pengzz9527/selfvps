@@ -1,12 +1,27 @@
 User-agent: *
 Allow: /
 
-Sitemap: {{ .Site.BaseURL }}sitemap.xml
-{{- range .Site.Home.AllTranslations }}
-Sitemap: {{ .Permalink }}sitemap.xml
-{{- end }}
+Sitemap: https://selfvps.net/sitemap.xml
 
-# 屏蔽管理路径和临时文件
+# 屏蔽管理路径、临时文件和非内容页面
 Disallow: /admin/
 Disallow: /tmp/
+Disallow: /zh/categories/
+Disallow: /en/categories/
+Disallow: /zh/tags/
+Disallow: /en/tags/
+Disallow: /zh/search/
+Disallow: /en/search/
+Disallow: /zh/about/
+Disallow: /en/about/
+Disallow: /zh/contact/
+Disallow: /en/contact/
+Disallow: /zh/terms/
+Disallow: /en/terms/
+Disallow: /zh/privacy/
+Disallow: /en/privacy/
+Disallow: /zh/cheatsheet/
+Disallow: /en/cheatsheet/
+Disallow: /zh/newsletter/
+Disallow: /en/newsletter/
 Disallow: /*.pdf$
