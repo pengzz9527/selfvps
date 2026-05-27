@@ -5,6 +5,17 @@
   "framework": null,
   "redirects": [
     {
+      "source": "/(.*)",
+      "destination": "https://selfvps.net/:splat",
+      "permanent": true,
+      "has": [
+        {
+          "type": "host",
+          "value": "www.selfvps.net"
+        }
+      ]
+    },
+    {
       "source": "/",
       "destination": "/zh/",
       "permanent": true
