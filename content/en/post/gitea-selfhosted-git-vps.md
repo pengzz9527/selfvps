@@ -1,7 +1,7 @@
 ---
 title: "Gitea Self-Hosted Git Service: Set Up a Lightweight Code Repository on Your VPS"
 description: "Deploy Gitea on your VPS — a lightweight, self-hosted Git service that runs on just 256MB RAM. Complete guide covering Docker deployment, reverse proxy with HTTPS, PostgreSQL, CI/CD pipelines, team collaboration, and backup automation."
-date: 2026-05-27T09:00:00+08:00
+date: 2026-06-02T09:00:00+08:00
 slug: "gitea-selfhosted-git-vps"
 tags: ["Gitea", "Git", "code hosting", "Docker", "self-hosting", "VPS", "CI/CD", "DevOps", "GitHub alternative"]
 categories: ["DevOps", "Version Control"]
