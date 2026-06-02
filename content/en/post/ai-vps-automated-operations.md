@@ -77,9 +77,9 @@ curl -fsSL https://hermes-agent.sh/install | sh
 hermes init --provider openai --model gpt-4o
 ```
 
-{{< alert >}}
+> ⚠️ 
 **Security note**: Letting AI execute shell commands directly carries risk. Run in `--readonly` mode for a few days to validate diagnostic logic before enabling autonomous fixes.
-{{< /alert >}}
+
 
 ### Agent Workflow Configuration
 
@@ -206,13 +206,13 @@ The AI agent's diagnostic results feed through:
 
 ### 3. Action Execution (Safety First)
 
-{{< alert "warning" >}}
+> ⚠️ 
 **Auto-fix risks**: Shell commands executed by AI can have unintended side effects. Always:
 - Define clear **pre-flight checks** for each fix step
 - Run in `dry-run` mode to verify effect before execution
 - Set **human approval gates** for destructive operations (data deletion)
 - Take **system snapshots** before executing fixes
-{{< /alert >}}
+
 
 ## Real-World Scenario: Automatic Disk Alert Handling
 
