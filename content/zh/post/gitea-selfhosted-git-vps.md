@@ -1,7 +1,7 @@
 ---
 title: "Gitea 自托管 Git 服务：在 VPS 上搭建轻量级代码仓库"
 description: "用 Gitea 在 VPS 上搭建属于自己的 Git 代码托管平台，替代 GitHub/GitLab。仅需 256MB 内存、Docker 一键部署，支持 CI/CD、WebHook、SSH 密钥管理、团队协作，完全掌控你的代码数据。"
-date: 2026-06-02T10:00:00+08:00
+date: 2026-05-27T09:00:00+08:00
 slug: "gitea-selfhosted-git-vps"
 tags: ["Gitea", "Git", "代码托管", "Docker", "自托管", "VPS", "CI/CD", "DevOps", "GitHub 替代"]
 categories: ["DevOps", "版本控制"]
