@@ -67,11 +67,9 @@
 <!-- Canonical URL -->
 <link rel="canonical" href="{{ .Permalink }}">
 
-<!-- 禁止索引分类/标签/搜索等列表页面 -->
-{{- if or .IsHome (eq .Kind "taxonomy") (eq .Kind "term") (eq .Kind "section") (in .RelPermalink "/search/") (in .RelPermalink "/page/") }}
-{{- if not .IsHome }}
+<!-- 禁止索引分类/标签/搜索等薄内容页面 -->
+{{- if or (eq .Kind "taxonomy") (eq .Kind "term") (in .RelPermalink "/search/") (in .RelPermalink "/page/") }}
 <meta name="robots" content="noindex, follow">
-{{- end }}
 {{- end }}
 
 <!-- Umami Analytics (可选：在 hugo.yaml 配置 params.umami 启用) -->
