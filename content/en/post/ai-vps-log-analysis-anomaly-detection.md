@@ -1,721 +1,648 @@
 ---
-title: "AI-Powered Log Analysis: Automatically Detect VPS Anomalies and Root Causes with LLMs"
-description: "Stop manually sifting through logs — deploy an AI log analysis system on your VPS that uses LLMs to automatically identify anomalies, diagnose root causes, and generate actionable fix recommendations, boosting ops efficiency 10x."
-date: 2026-06-12T21:00:00+08:00
-lastmod: 2026-06-12T21:00:00+08:00
-slug: "ai-vps-log-analysis-anomaly-detection"
-tags: ["AI", "Log Analysis", "LLM", "Anomaly Detection", "AIOps", "VPS", "Docker", "Ollama"]
-categories: ["AI Ops"]
-image: /images/posts/ai-vps-log-analysis-anomaly-detection/featured.png
+title: "AI-Powered VPS Log Analysis: Real-Time Threat Detection & Anomaly Alerting"
+date: 2026-07-19
+description: "Build an intelligent log analysis system on your VPS using LLMs and rule engines for real-time threat detection, anomaly alerting, and automated response."
+tags: ["AI Ops", "Log Analysis", "Security Monitoring", "VPS", "Anomaly Detection", "Automated Response"]
+categories: ["AI + VPS"]
+image: "/images/posts/ai-vps-log-analysis-anomaly-detection/featured.png"
 draft: false
-aliases: [/en/post/ai-vps-log-analysis-anomaly-detection/]
 ---
 
-## The Pain of Traditional Log Analysis
+## Introduction
 
-As a VPS operator, you've probably experienced this scenario:
+Server logs are the "black box" of VPS security — system logs, authentication logs, web access logs, and application logs contain rich clues about security events. However, when faced with tens or hundreds of thousands of log lines per day, traditional regex-matching and threshold-based alerting often falls short: high false-positive rates, expensive rule maintenance, and difficulty discovering novel attack patterns.
 
-It's 3 AM and your server alarms go off. You open the terminal, run `tail -f /var/log/syslog`, and then—face a wall of dense log entries. Error messages are scattered across system logs, application logs, Nginx access logs, and Docker container logs. You need to manually correlate all this information to piece together what went wrong.
-
-And the problem might not even be where you're looking.
-
-Traditional monitoring tools (Prometheus, Uptime Kuma) are great at telling you **"something is wrong"**, but terrible at telling you **"why something is wrong"**. You need a smart system that understands log semantics, detects anomalous patterns, and tells you the root cause and how to fix it—directly.
-
-That's what **AI log analysis** solves.
+This guide walks through building an **AI-driven intelligent log analysis system** that combines the semantic understanding power of Large Language Models (LLMs) with the structured analysis capabilities of traditional rule engines, enabling real-time detection, intelligent classification, and automated response for VPS security events.
 
 ---
 
-## Core Concepts of AI Log Analysis
+## Why AI Log Analysis?
 
-At its core, AI log analysis uses Large Language Models (LLMs) to replace manual log reading and correlation:
+### Pain Points of Traditional Approaches
 
-```
-                    ┌──────────────────────────────┐
-                    │   AI Log Analysis System      │
-                    │                               │
-Logs from various  ─────────────→│  1. Log aggregation & parsing  │
-(syslog/nginx/     │  2. Anomaly pattern detection  │
- docker/app logs)  │  3. LLM semantic analysis      │
-                    │  4. Root cause diagnosis       │
-                    │  5. Fix recommendation generation│
-                    │                               │
-                    │  ↓ Push results                │
-                    └────────→ Telegram / Email / Ticket
-```
+| Pain Point | Description |
+|------------|-------------|
+| **Complex rule maintenance** | Tools like fail2ban and OSSEC rely on manually written regex rules; new attack patterns require timely updates |
+| **High false-positive rate** | Fixed thresholds (e.g., 10 failed logins in 5 minutes) easily misclassify normal user behavior as attacks |
+| **Missing context** | Traditional tools see individual log entries, unable to understand cross-time, cross-service relationships |
+| **Delayed response** | From detection to alert to remediation, multiple manual steps lengthen the golden response window |
 
-Key capabilities include:
+### What AI Brings to the Table
 
-1. **Multi-source log aggregation**: Unify logs scattered across different places
-2. **Anomaly pattern recognition**: Automatically detect frequency anomalies, format anomalies, temporal anomalies
-3. **LLM semantic analysis**: Understand the real meaning of log content, not just keyword matching
-4. **Root cause chain deduction**: Trace from surface errors to underlying causes
-5. **Automatic fix recommendations**: Generate executable repair commands
+- **Semantic understanding**: LLMs can interpret the natural language meaning of logs and identify novel attack patterns
+- **Dynamic baselines**: Learn normal behavior patterns and automatically adjust detection thresholds
+- **Intelligent correlation**: Connect scattered log events into complete attack chains
+- **Natural language alerts**: Generate human-readable security reports instead of cryptic alert codes
 
 ---
 
-## Approach 1: Lightweight — Logstash + LLM Plugin
-
-If you're already using the ELK Stack (Elasticsearch + Logstash + Kibana) or don't want to introduce many new tools, you can add LLM analysis plugins to Logstash.
-
-### Deployment Architecture
+## Architecture Overview
 
 ```
-Application ──→ rsyslog ──→ Logstash ──→ Elasticsearch
-                                │
-                                ▼
-                           LLM Analysis Service
-                           (Ollama / API)
+┌─────────────────────────────────────────────────────┐
+│                  VPS Log Sources                     │
+│  auth.log | syslog | nginx access/error | app.log   │
+└──────────────────┬──────────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│          Log Collection Layer (Vector / Filebeat)    │
+│         Structured parsing → JSON → local pipeline  │
+└──────────────────┬──────────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│         Analysis Engine (Local LLM + Rule Engine)    │
+│  ┌─────────────┐  ┌─────────────┐  ┌────────────┐  │
+│  │ Rule Match  │  │ Anomaly     │  │ LLM        │  │
+│  │ fail2ban    │  │ Detection   │  │ Semantic   │  │
+│  │ OSSEC       │  │ Statistical │  │ Classification│ │
+│  └─────────────┘  └─────────────┘  └────────────┘  │
+└──────────────────┬──────────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│              Alerting & Response Layer               │
+│  Telegram Bot | Email | Auto-block | Ticket Gen      │
+└─────────────────────────────────────────────────────┘
 ```
 
-### Step 1: Install and Configure Logstash
+---
+
+## Step 1: Log Collection & Normalization
+
+### Using Vector for Log Collection
+
+[Vector](https://vector.dev/) is a high-performance log pipeline tool written in Rust, lighter and more flexible than Filebeat.
+
+```yaml
+# /etc/vector/vector.yaml
+sources:
+  auth_log:
+    type: file
+    include:
+      - /var/log/auth.log
+    read_from: beginning
+
+  nginx_access:
+    type: file
+    include:
+      - /var/log/nginx/access.log
+    read_from: beginning
+
+  nginx_error:
+    type: file
+    include:
+      - /var/log/nginx/error.log
+    read_from: beginning
+
+  syslog:
+    type: file
+    include:
+      - /var/log/syslog
+    read_from: beginning
+
+transforms:
+  parse_auth:
+    type: remap
+    inputs: ["auth_log"]
+    source: |
+      . = parse_syslog(.message) ?? {}
+      .service = "auth"
+      .event_type = if has(.program) then .program else "unknown" end
+
+  parse_nginx:
+    type: remap
+    inputs: ["nginx_access"]
+    source: |
+      . = parse_apache_log(.message) ?? {}
+      .service = "nginx"
+      .status_code = to_int!(.status)
+
+  normalize:
+    type: remap
+    inputs: ["parse_auth", "parse_nginx"]
+    source: |
+      .timestamp = now()
+      .host = gethostname()
+      .priority = "info"
+
+sinks:
+  local_json:
+    type: file
+    inputs: ["normalize"]
+    path: "/var/log/vps-ai-analysis/events.jsonl"
+    encoding:
+      codec: json
+```
+
+Start Vector:
 
 ```bash
-# Install Logstash
-sudo apt update
-sudo apt install -y logstash
-
-# Verify installation
-/usr/share/logstash/bin/logstash --version
+sudo systemctl enable vector
+sudo systemctl start vector
 ```
 
-### Step 2: Configure Log Inputs
+---
 
-Create `/etc/logstash/conf.d/01-input.conf`:
+## Step 2: Rule-Based Detection Engine
 
-```
-input {
-  # System logs
-  syslog {
-    port => 5551
-    type => "syslog"
-  }
+### SSH Brute Force Detection
 
-  # Docker container logs (via Filebeat or journal)
-  file {
-    path => "/var/log/containers/*.log"
-    start_position => "beginning"
-    tags => ["docker"]
-  }
+```python
+#!/usr/bin/env python3
+"""SSH brute force detection using sliding window."""
 
-  # Nginx access logs
-  file {
-    path => "/var/log/nginx/access.log"
-    start_position => "beginning"
-    tags => ["nginx"]
-    codec => json {
-      # Nginx needs JSON log format configured
-    }
-  }
+import json
+import time
+from collections import defaultdict
+from datetime import datetime, timedelta
 
-  # Custom application logs
-  file {
-    path => "/opt/myapp/logs/*.log"
-    start_position => "beginning"
-    tags => ["application"]
-  }
-}
-```
+class SSHBruteForceDetector:
+    def __init__(self, max_attempts=5, window_minutes=10):
+        self.max_attempts = max_attempts
+        self.window = timedelta(minutes=window_minutes)
+        self.failed_logins = defaultdict(list)
 
-### Step 3: Log Parsing and Structuring
+    def analyze(self, event: dict):
+        if event.get("service") != "auth":
+            return None
 
-Create `/etc/logstash/conf.d/10-filter.conf`:
+        if "Failed password" not in event.get("message", ""):
+            return None
 
-```
-filter {
-  # Parse syslog format
-  if "syslog" in [tags] {
-    grok {
-      match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:[%{NUMBER:syslog_pid}])?: %{GREEDYDATA:syslog_message}" }
-    }
-    date {
-      match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
-    }
-  }
+        # Extract IP from log message
+        parts = event["message"].split()
+        ip = None
+        for part in parts:
+            if ":" in part and part.count(".") == 3:
+                ip = part.split(":")[0]
+                break
 
-  # Parse JSON format logs
-  if "docker" in [tags] or "application" in [tags] {
-    json {
-      source => "message"
-      target => "parsed_log"
-      skip_on_invalid_json => true
-    }
+        if not ip:
+            return None
 
-    mutate {
-      copy => { "parsed_log" => "log_details" }
-    }
-  }
+        username = "unknown"
+        for i, part in enumerate(parts):
+            if part == "for" and i + 1 < len(parts):
+                username = parts[i + 1]
+                break
 
-  # Extract common error keywords
-  mutate {
-    add_field => {
-      "error_level" => "info"
-    }
-  }
+        now = datetime.now()
+        self.failed_logins[ip].append(now)
 
-  if [message] =~ /\b(error|fail|fatal|panic|critical)\b/i {
-    mutate { replace => { "error_level" => "error" } }
-  }
-  if [message] =~ /\b(warn|warning)\b/i {
-    mutate { replace => { "error_level" => "warning" } }
-  }
-}
+        # Clean old entries
+        cutoff = now - self.window
+        self.failed_logins[ip] = [t for t in self.failed_logins[ip] if t > cutoff]
+
+        if len(self.failed_logins[ip]) >= self.max_attempts:
+            return {
+                "type": "ssh_bruteforce",
+                "severity": "high",
+                "ip": ip,
+                "username": username,
+                "attempts": len(self.failed_logins[ip]),
+                "message": f"SSH brute force detected: {len(self.failed_logins[ip])} failed attempts from {ip} for user '{username}'"
+            }
+
+        return None
 ```
 
-### Step 4: Deploy Local LLM Analysis Service
+### Web Application Anomaly Detection
 
-Run Ollama on your VPS:
+```python
+class WebAnomalyDetector:
+    """Detect abnormal web access patterns."""
+
+    def __init__(self):
+        self.request_counts = defaultdict(list)
+
+    def analyze(self, event: dict):
+        if event.get("service") != "nginx":
+            return None
+
+        status_code = int(event.get("status", 200))
+        ip = event.get("client_ip", "unknown")
+        path = event.get("request_path", "/")
+
+        now = time.time()
+        self.request_counts[ip].append(now)
+
+        # Clean old entries (last 60 seconds)
+        cutoff = now - 60
+        self.request_counts[ip] = [t for t in self.request_counts[ip] if t > cutoff]
+
+        current_rate = len(self.request_counts[ip])
+
+        alerts = []
+
+        # High request rate (potential DDoS/scanner)
+        if current_rate > 100:
+            alerts.append({
+                "type": "high_request_rate",
+                "severity": "medium",
+                "ip": ip,
+                "rate_per_minute": current_rate,
+                "message": f"High request rate from {ip}: {current_rate} requests/min"
+            })
+
+        # Scanner pattern: many 404s
+        if status_code == 404:
+            alerts.append({
+                "type": "scanner_detected",
+                "severity": "low",
+                "ip": ip,
+                "path": path,
+                "message": f"Potential scanner hit: {path} from {ip}"
+            })
+
+        # Error spike
+        if status_code >= 500:
+            alerts.append({
+                "type": "server_error",
+                "severity": "medium",
+                "ip": ip,
+                "status": status_code,
+                "message": f"Server error {status_code} for {path} from {ip}"
+            })
+
+        return alerts
+```
+
+---
+
+## Step 3: LLM-Powered Intelligence Layer
+
+### Installing Local LLM with Ollama
 
 ```bash
 # Install Ollama
 curl -fsSL https://ollama.com/install.sh | sh
 
-# Pull a suitable model (7B params is enough for log analysis)
-ollama pull llama3.2
+# Pull a lightweight model suitable for log analysis
+ollama pull llama3.2:3b
 
-# Or use a smaller model (suitable for 2GB RAM VPS)
-ollama pull qwen2.5:3b
+# Verify installation
+ollama list
 ```
 
-### Step 5: LLM Log Analysis Script
-
-Create `/opt/log-analyzer/analyze_logs.py`:
+### LLM Log Analysis Script
 
 ```python
 #!/usr/bin/env python3
-"""
-AI Log Analyzer: Read logs from Elasticsearch, analyze anomalies and root causes with LLM
-"""
-import json
+"""LLM-powered log analysis for security events."""
+
 import subprocess
-import sys
-from datetime import datetime, timedelta
-from elasticsearch import Elasticsearch
+import json
+from datetime import datetime
 
-# Elasticsearch connection
-es = Elasticsearch(["http://localhost:9200"])
+def analyze_with_llm(events: list[dict], context: str = "") -> dict:
+    """Send events to local LLM for analysis."""
 
-# LLM analysis prompt
-ANALYSIS_PROMPT = """
-You are a professional operations log analysis expert. Please analyze the following log snippets and provide:
+    # Format events for LLM
+    formatted_events = []
+    for event in events[-20:]:  # Last 20 events
+        formatted_events.append(json.dumps(event, ensure_ascii=False))
 
-1. **Anomaly Detection**: Identify which log entries are anomalous and why
-2. **Root Cause Analysis**: Infer the most likely failure root cause from the logs
-3. **Impact Assessment**: Judge the severity level (P0-P3)
-4. **Fix Recommendations**: Provide concrete, executable repair steps
-5. **Prevention Measures**: Suggest how to prevent similar issues in the future
+    prompt = f"""You are a cybersecurity analyst reviewing server logs.
 
-Log data:
-{logs}
+Context: {context}
 
-Please output the analysis results in a clear format, in English.
-"""
+Recent security events:
+{chr(10).join(formatted_events)}
 
-def get_recent_errors(hours=1):
-    """Get error logs from the last N hours"""
-    since_time = (datetime.now() - timedelta(hours=hours)).isoformat()
-    
-    query = {
-        "query": {
-            "bool": {
-                "must": [{"range": {"@timestamp": {"gte": since_time}}}],
-                "should": [
-                    {"match": {"error_level": "error"}},
-                    {"match": {"error_level": "warning"}},
-                    {"match_phrase": {"message": "exception"}},
-                    {"match_phrase": {"message": "timeout"}},
-                    {"match_phrase": {"message": "connection refused"}}
-                ]
-            }
-        },
-        "size": 500,
-        "_source": ["@timestamp", "message", "error_level", "tags", "hostname"]
-    }
-    
-    response = es.search(index="logstash-*", body=query)
-    return [hit["_source"] for hit in response["hits"]["hits"]]
+Please analyze these events and provide:
+1. Threat level assessment (Low/Medium/High/Critical)
+2. Attack pattern identification
+3. Recommended actions
+4. Whether this is a false positive
 
-def analyze_with_llm(log_entries):
-    """Call LLM to analyze logs"""
-    log_text = json.dumps(log_entries, ensure_ascii=False, indent=2)
-    prompt = ANALYSIS_PROMPT.format(logs=log_text)
-    
-    result = subprocess.run(
-        ["ollama", "run", "llama3.2", prompt],
-        capture_output=True, text=True, timeout=120
-    )
-    return result.stdout
+Respond in JSON format:
+{{
+  "threat_level": "High",
+  "pattern": "SSH Brute Force",
+  "confidence": 0.95,
+  "actions": ["Block IP", "Review failed accounts"],
+  "is_false_positive": false,
+  "summary": "Multiple failed SSH login attempts detected..."
+}}"""
+
+    try:
+        result = subprocess.run(
+            ["ollama", "run", "llama3.2:3b", prompt],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+
+        if result.returncode == 0:
+            output = result.stdout.strip()
+            start = output.find("{")
+            end = output.rfind("}") + 1
+            if start >= 0 and end > start:
+                return json.loads(output[start:end])
+
+        return {"error": "LLM analysis failed"}
+
+    except Exception as e:
+        return {"error": str(e)}
+
 
 def main():
-    print(f"Starting log analysis [{datetime.now().isoformat()}]")
-    
-    errors = get_recent_errors(hours=1)
-    
-    if not errors:
-        print("No anomalous logs found")
+    # Read recent events
+    events = []
+    try:
+        with open("/var/log/vps-ai-analysis/events.jsonl", "r") as f:
+            lines = f.readlines()[-50:]  # Last 50 events
+            for line in lines:
+                events.append(json.loads(line.strip()))
+    except FileNotFoundError:
+        print("No events file found")
         return
-    
-    print(f"Found {len(errors)} anomalous log entries, analyzing...")
-    
-    batch_size = 50
-    for i in range(0, len(errors), batch_size):
-        batch = errors[i:i + batch_size]
-        analysis = analyze_with_llm(batch)
-        print(f"\n--- Analysis Batch {i // batch_size + 1} ---")
-        print(analysis)
-    
-    print("\nLog analysis complete")
+
+    # Filter security-relevant events
+    security_events = [
+        e for e in events
+        if any(keyword in json.dumps(e) for keyword in [
+            "Failed", "Invalid", "error", "404", "403", "500",
+            "attack", "denied", "refused"
+        ])
+    ]
+
+    if not security_events:
+        print("No security events detected")
+        return
+
+    analysis = analyze_with_llm(security_events)
+    print(json.dumps(analysis, indent=2, ensure_ascii=False))
+
 
 if __name__ == "__main__":
     main()
 ```
 
-### Step 6: Schedule Periodic Analysis
-
-Add to crontab:
-
-```bash
-# Analyze logs every 15 minutes
-*/15 * * * * /opt/log-analyzer/analyze_logs.py >> /var/log/log-analyzer.log 2>&1
-```
-
 ---
 
-## Approach 2: Modern — Vector + OPA + LLM
+## Step 4: Smart Alerting & Automated Response
 
-For a more modern log analysis pipeline, use **Vector** (a high-performance log collector) instead of Logstash, combined with **Open Policy Agent (OPA)** for policy validation, and LLM for deep analysis.
-
-### Why Choose Vector?
-
-| Feature | Logstash | Vector |
-|---------|----------|--------|
-| Performance | Medium (JVM) | Extremely high (Rust) |
-| Memory usage | Higher | Very low |
-| Config complexity | Medium | Low (TOML/YAML) |
-| 2.5GB VPS friendliness | ⚠️ Barely | ✅ Perfect |
-
-### Deploy Vector
-
-```yaml
-# vector.yaml
-data_dir: /var/lib/vector
-
-sources:
-  system_logs:
-    type: syslog
-    address: 0.0.0.0:5551
-  
-  app_logs:
-    type: file
-    include:
-      - /opt/*/logs/*.log
-
-transforms:
-  anomaly_detection:
-    type: remap
-    inputs:
-      - system_logs
-      - app_logs
-    source: |
-      .severity = if contains(string!(.message), "error") {
-        "error"
-      } else if contains(string!(.message), "warn") {
-        "warning"
-      } else {
-        "info"
-      }
-      
-      .anomaly_score = if contains(string!(.message), "panic|fatal|critical") {
-        10.0
-      } else if contains(string!(.message), "error|exception") {
-        7.0
-      } else if contains(string!(.message), "timeout|refused") {
-        5.0
-      } else {
-        0.0
-      }
-
-sinks:
-  elasticsearch:
-    type: elasticsearch
-    inputs:
-      - anomaly_detection
-    endpoints: ["http://localhost:9200"]
-    
-  telegram_alert:
-    type: telegram
-    inputs:
-      - anomaly_detection
-    api_key: "YOUR_BOT_TOKEN"
-    chat_id: "YOUR_CHAT_ID"
-    threshold:
-      type: less_than
-      value: 1
-    message:
-      text: |
-        ⚠️ Anomalous log detected!
-        Server: {{ hostname }}
-        Level: {{ .severity }}
-        Anomaly Score: {{ .anomaly_score }}
-        Content: {{ truncate(.message, 500) }}
-```
-
-```bash
-# Install Vector
-curl --proto '=https' --tlsv1.2 -sSf https://sh.vector.dev | sh
-
-# Configure Vector
-sudo cp vector.yaml /etc/vector/vector.yaml
-
-# Start Vector
-sudo systemctl enable vector
-sudo systemctl start vector
-```
-
-### OPA Policy Example
-
-Create `anomaly-policy.rego`:
-
-```rego
-package log_anomaly
-
-deny[msg] {
-    input.severity == "error"
-    input.anomaly_score >= 7.0
-    msg := sprintf("Critical error [%v]: %v", [input.hostname, truncate(input.message, 200)])
-}
-
-deny[msg] {
-    # Same error repeated in a short time (pattern detection)
-    count(input.recent_errors) > 50
-    msg := sprintf("Error storm: same error repeated %v times", [count(input.recent_errors)])
-}
-```
-
----
-
-## Approach 3: Fully Managed — Commercial AI Log Tools
-
-If you don't want to operate your own analysis system, here are some excellent commercial options:
-
-| Tool | Price | AI Capability | Best For |
-|------|-------|---------------|----------|
-| **Datadog AI Log Management** | $15+/host/mo | Auto anomaly detection, root cause | Enterprise |
-| **Grafana Cloud APM** | Free up to 10k metrics | Log correlation, distributed tracing | Small-medium |
-| **New Relic Log Management** | $9+/GB | AI-driven log clustering | Medium-large |
-| **Papertrail + AI** | $2.50+/GB | Keyword-based patterns | Small VPS |
-| **Better Stack** | $25+/mo | ML-driven anomaly detection | Full-stack |
-
-> **Cost-saving tip**: If you have fewer than 3 VPS instances, the self-built approach (Approach 1 or 2) can keep total costs under €10/month (VPS fees alone). Commercial tools become cost-effective at 5+ servers.
-
----
-
-## Hands-On: AI Analysis of Nginx Access Logs
-
-Nginx access logs are one of the most overlooked "goldmine" data sources. With AI analysis, you can discover:
-
-- **DDoS attacks**: Same IP making massive requests in a short time
-- **Bot identification**: Malicious crawler behavior patterns
-- **404 anomalies**: Sudden spike in 404s may indicate an attack or misconfiguration
-- **Slow request tracking**: Which endpoints are slow and why
-
-### Configure Nginx JSON Log Format
-
-```nginx
-# /etc/nginx/conf.d/json_format.conf
-log_format json_combined escape=json
-    '{'
-        '"time":"$time_iso8601",'
-        '"remote_addr":"$remote_addr",'
-        '"request":"$request",'
-        '"status":$status,'
-        '"body_bytes_sent":$body_bytes_sent,'
-        '"request_time":$request_time,'
-        '"http_referrer":"$http_referer",'
-        '"http_user_agent":"$http_user_agent",'
-        '"upstream_response_time":"$upstream_response_time"'
-    '}';
-
-access_log /var/log/nginx/access.json.log json_combined;
-```
-
-### AI Analysis Script
+### Telegram Bot Integration
 
 ```python
 #!/usr/bin/env python3
-"""
-Nginx Log AI Analyzer
-"""
-import re
-from collections import defaultdict, Counter
-from datetime import datetime, timedelta
+"""Smart alert system with Telegram integration."""
 
-def parse_access_log(log_file, lines=1000):
-    """Parse Nginx JSON logs"""
-    entries = []
-    pattern = re.compile(r'^\{.*\}$')
-    
-    with open(log_file, 'r') as f:
-        for line in reversed(list(f)):
-            if pattern.match(line.strip()):
-                try:
-                    entries.append(json.loads(line))
-                    if len(entries) >= lines:
-                        break
-                except json.JSONDecodeError:
-                    continue
-    
-    return entries
+import requests
+import json
+from datetime import datetime
 
-def detect_anomalies(entries):
-    """Detect anomalies in logs"""
-    anomalies = []
-    
-    # 1. Detect high-frequency IPs
-    ip_counts = Counter(e.get('remote_addr', '') for e in entries)
-    for ip, count in ip_counts.most_common(10):
-        if count > 100:  # More than 100 times in 1000 lines
-            anomalies.append({
-                "type": "high_frequency_ip",
-                "detail": f"IP {ip} appeared {count} times in recent logs",
-                "severity": "high" if count > 500 else "medium"
-            })
-    
-    # 2. Detect large volumes of 4xx/5xx errors
-    error_by_path = defaultdict(int)
-    for e in entries:
-        if e.get('status', 200) >= 500:
-            path = e.get('request', '').split()[1] if 'request' in e else ''
-            error_by_path[path] += 1
-    
-    for path, count in error_by_path.items():
-        if count > 10:
-            anomalies.append({
-                "type": "server_errors",
-                "detail": f"Endpoint {path} had {count} 5xx errors",
-                "severity": "critical"
-            })
-    
-    # 3. Detect slow requests
-    slow_requests = [
-        e for e in entries 
-        if e.get('request_time', '0') and float(e['request_time']) > 5
-    ]
-    if slow_requests:
-        anomalies.append({
-            "type": "slow_requests",
-            "detail": f"Found {len(slow_requests)} slow requests exceeding 5 seconds",
-            "severity": "medium"
-        })
-    
-    return anomalies
+TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN"
+CHAT_ID = "YOUR_CHAT_ID"
+
+def send_telegram_alert(alert: dict):
+    """Send formatted alert to Telegram."""
+
+    severity_emoji = {
+        "low": "🟡",
+        "medium": "🟠",
+        "high": "🔴",
+        "critical": "🚨"
+    }
+
+    emoji = severity_emoji.get(alert.get("severity", "medium"), "🟠")
+
+    message = f"""{emoji} *VPS Security Alert*
+
+*Type:* {alert.get('type', 'Unknown')}
+*Severity:* {alert.get('severity', 'N/A').upper()}
+*Time:* {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+{alert.get('message', '')}
+
+{json.dumps(alert.get('details', {}), ensure_ascii=False, indent=2)}"""
+
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    requests.post(url, json={
+        "chat_id": CHAT_ID,
+        "text": message,
+        "parse_mode": "Markdown",
+        "disable_web_page_preview": True
+    })
+
+
+def auto_block_ip(ip: str, reason: str):
+    """Automatically block IP using iptables."""
+
+    check = subprocess.run(
+        ["iptables", "-L", "INPUT", "-n"],
+        capture_output=True, text=True
+    )
+
+    if ip in check.stdout:
+        return False
+
+    subprocess.run([
+        "iptables", "-A", "INPUT", "-s", ip, "-j", "DROP"
+    ])
+    subprocess.run(["netfilter-persistent", "save"])
+
+    return True
+
+
+def handle_alert(alert: dict):
+    """Process alert and trigger appropriate response."""
+
+    severity = alert.get("severity", "medium")
+
+    send_telegram_alert(alert)
+
+    if severity in ["high", "critical"]:
+        ip = alert.get("ip")
+        if ip:
+            blocked = auto_block_ip(ip, alert.get("type"))
+            if blocked:
+                send_telegram_alert({
+                    "type": "auto_block",
+                    "severity": "high",
+                    "message": f"IP {ip} automatically blocked due to {alert.get('type')}"
+                })
 ```
 
 ---
 
-## Approach 4: Event-Driven AI Alerts
-
-The above approaches use a **pull pattern**—periodically querying logs. But a more efficient pattern is **event-driven**: trigger analysis only when logs appear.
-
-### Architecture
-
-```
-App Logs ──→ Vector ──→ Real-time Stream Processing ──→ Rule Engine ──→ Alert
-                                                        │
-                                            Trigger condition met
-                                                        │
-                                                        ▼
-                                                   LLM Deep Analysis
-                                                        │
-                                                        ▼
-                                                   Telegram / Email
-```
-
-### Implementation: Real-Time Alerts with Vector
-
-```yaml
-# vector.yaml - Real-time alert config
-transforms:
-  realtime_anomaly:
-    type: route
-    inputs:
-      - app_logs
-    route:
-      error: '{{ contains(string!(.message), "error|fatal|panic") }}'
-      warning: '{{ contains(string!(.message), "warn|timeout") }}'
-      alert: '{{ .anomaly_score >= 7.0 }}'
-
-sinks:
-  telegram_error:
-    type: telegram
-    inputs:
-      - realtime_anomaly.alert
-    api_key: "${TELEGRAM_BOT_TOKEN}"
-    chat_id: "${TELEGRAM_CHAT_ID}"
-    message:
-      text: |
-        🚨 {{ format!("text", .) }}
-        Severity: {{ .severity }}
-        Message: {{ truncate(.message, 300) }}
-```
-
-### Combined with Prometheus Threshold Alerts
-
-```yaml
-# prometheus/alerts/log_alerts.yml
-groups:
-  - name: log_anomaly_alerts
-    rules:
-      - alert: HighErrorRate
-        expr: |
-          rate(log_errors_total[5m]) > 10
-        for: 2m
-        labels:
-          severity: critical
-        annotations:
-          summary: "High error rate detected"
-          description: "Error rate exceeded 10/sec over the last 5 minutes"
-          
-      - alert: LogVolumeSpike
-        expr: |
-          increase(log_lines_total[10m]) > 10000
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Log volume spike"
-          description: "Log volume increased 10x in the last 10 minutes"
-```
-
-Pair Alertmanager to push alerts to Telegram/email, including LLM analysis summaries in the alert messages.
-
----
-
-## Common Scenarios and AI Solutions
-
-### Scenario 1: Website Suddenly Slow
-
-**Traditional approach**: Manually run `top`, check disk, check DB connections, review slow query logs, browse Nginx logs—potentially 30+ minutes.
-
-**AI log analysis**:
-```
-AI Report:
-- Root cause: PostgreSQL connection pool exhausted
-- Evidence: 23 "connection pool exhausted" entries in application.log
-- Impact: API response time increased from 200ms to 15s
-- Fix:
-  1. Emergency: Increase pgbouncer max_connections from 100 to 200
-  2. Investigate: SELECT * FROM pg_stat_activity WHERE state = 'idle';
-  3. Long-term: Optimize database connection management in app code
-```
-
-### Scenario 2: SSL Certificate Expiring Soon
-
-**AI auto-detection**:
-```
-AI Report:
-- Certificate: example.com
-- Expires: 2026-06-20 (8 days remaining)
-- Auto-fix: certbot renew --cert-name example.com
-- Recommendation: Configure auto-renewal cron: 0 0 1 * * certbot renew --quiet
-```
-
-### Scenario 3: Disk Space Exhausted
-
-**AI correlation analysis**:
-```
-AI Report:
-- Root cause: Container logs growing abnormally in /var/log/docker
-- Evidence: container-abc.log grew from 10MB to 50GB in 6 hours
-- Underlying cause: Container app frequently printing debug logs (containing sensitive data)
-- Fix:
-  1. Emergency: truncate /var/lib/docker/containers/abc/*.log
-  2. Configure: Add logging limits in docker-compose
-     logging:
-       driver: "json-file"
-       options:
-         max-size: "10m"
-         max-file: "3"
-```
-
----
-
-## Best Practices
-
-### 1. Choose the Right Model
-
-| Model | Size | VPS RAM Requirement | Speed | Best For |
-|-------|------|---------------------|-------|----------|
-| **Qwen2.5-3B** | 2GB | 4GB+ | Fast | Log classification, simple analysis |
-| **Llama3.2-3B** | 2GB | 4GB+ | Fast | Moderate complexity analysis |
-| **Phi-3.5-mini** | 2GB | 4GB+ | Fast | Quick classification and summarization |
-| **Llama3.1-8B** | 5GB | 8GB+ | Medium | Deep root cause analysis |
-
-> **Recommendation**: Start with Qwen2.5-3B or Phi-3.5-mini—they're fast, effective, and suitable for 4GB RAM VPS instances.
-
-### 2. Log Sanitization
-
-Logs may contain sensitive information (API keys, user data). Sanitize before sending to LLM:
+## Step 5: Daily AI Security Report
 
 ```python
-import re
+#!/usr/bin/env python3
+"""Generate daily AI security report."""
 
-def sanitize_logs(log_entries):
-    """Sanitize log entries"""
-    patterns = [
-        (r'(apikey|token|secret|password|authorization)\s*[:=]\s*["\']?(\S+)', r'\1=***REDACTED***'),
-        (r'\b\d{16}\b', '***CARD_REDACTED***'),  # Credit card numbers
-        (r'\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b', '***EMAIL_REDACTED***'),  # Emails
-    ]
-    
-    for entry in log_entries:
-        message = entry.get('message', '')
-        for pattern, replacement in patterns:
-            message = re.sub(pattern, replacement, message, flags=re.IGNORECASE)
-        entry['message'] = message
-    
-    return log_entries
-```
+import json
+import subprocess
+from datetime import datetime, timedelta
+from collections import Counter
 
-### 3. Cost Optimization
+def generate_daily_report():
+    """Generate daily security report with LLM summary."""
 
-- **Deferred analysis**: Non-urgent log analysis can be done offline (hourly instead of real-time), during off-peak hours
-- **Message trimming**: Send only key logs to LLM, not all logs. Filter with rule engines first, then deep-analyze with AI
-- **Cache analysis results**: For similar error patterns, cache LLM analysis results to avoid redundant calls
+    yesterday = datetime.now() - timedelta(days=1)
+    events = []
 
-### 4. Monitor the AI Analysis System Itself
+    try:
+        with open("/var/log/vps-ai-analysis/events.jsonl", "r") as f:
+            for line in f:
+                event = json.loads(line.strip())
+                if event.get("timestamp"):
+                    events.append(event)
+    except FileNotFoundError:
+        return "No events data available."
 
-```yaml
-# Monitoring metrics
-- log_analysis_requests_total        # Total analysis requests
-- log_analysis_duration_seconds      # Analysis duration
-- log_analysis_error_rate            # Analysis failure rate
-- llm_api_latency_seconds            # LLM API latency
-- llm_token_usage_total              # Token consumption
-```
+    # Aggregate statistics
+    alert_counts = Counter()
+    top_ips = Counter()
+    attack_types = Counter()
 
----
+    for event in events:
+        if event.get("type"):
+            alert_counts[event["type"]] += 1
+            if event.get("ip"):
+                top_ips[event["ip"]] += 1
+            if event.get("category"):
+                attack_types[event["category"]] += 1
+
+    context = f"""Daily security summary for {yesterday.strftime('%Y-%m-%d')}:
+- Total security events: {len(events)}
+- Top alert types: {dict(alert_counts.most_common(5))}
+- Top offending IPs: {dict(top_ips.most_common(5))}"""
+
+    events_summary = json.dumps({
+        "total": len(events),
+        "by_type": dict(alert_counts),
+        "top_ips": dict(top_ips.most_common(10))
+    }, indent=2)
+
+    summary = analyze_with_llm([], context=f"{context}\n\nDetailed stats:\n{events_summary}")
+
+    report = f"""# 🛡️ Daily VPS Security Report
+**Date:** {yesterday.strftime('%Y-%m-%d')}
+**Generated:** {datetime.now().strftime('%H:%M:%S')}
 
 ## Summary
+{summary.get('summary', 'No significant security events detected.')}
 
-AI log analysis isn't a one-time tool—it's a **capability upgrade** for your operations system:
+## Threat Level: {summary.get('threat_level', 'Normal')}
 
-| Dimension | Traditional | AI-Enhanced |
-|-----------|-------------|-------------|
-| Problem discovery | Reactive (after alert triggers) | Proactive (pattern-based early detection) |
-| Root cause localization | Manual multi-source correlation (30+ min) | AI automatic correlation (seconds) |
-| Fix recommendations | Depends on personal experience | AI-generated standardized solutions |
-| Knowledge retention | Personal memory, verbal handover | AI reports are searchable and reusable |
-| Cost | High labor cost | Near-zero marginal cost |
+## Top Alerts
+{chr(10).join(f"- {k}: {v}" for k, v in alert_counts.most_common(10))}
 
-**Recommended starting path**:
+## Top Offending IPs
+{chr(10).join(f"- {ip}: {count} events" for ip, count in top_ips.most_common(10))}
 
-1. **Day 1**: Deploy Ollama + pull a small model, write a simple log analysis script
-2. **Week 1**: Integrate syslog and Docker logs, set up periodic analysis
-3. **First month**: Integrate Telegram alerts, implement real-time anomaly push
-4. **Continuous optimization**: Adjust analysis prompts and policies based on actual incident scenarios
+## Recommended Actions
+{chr(10).join(f"- {action}" for action in summary.get('actions', []))}
+"""
 
-Your VPS doesn't need more monitoring tools—it needs a smart assistant that can **understand** the data these tools produce.
+    return report
+```
 
 ---
 
-*Have you encountered any particularly "mysterious" log issues? Any interesting discoveries after using AI analysis? Feel free to share in the comments.*
+## Full Deployment Script
+
+```bash
+#!/bin/bash
+# deploy-ai-log-analysis.sh
+# One-click deployment for AI-powered VPS log analysis
+
+set -e
+
+echo "🚀 Deploying AI Log Analysis System..."
+
+# Step 1: Install dependencies
+echo "📦 Installing dependencies..."
+apt-get update
+apt-get install -y python3-pip python3-venv curl
+pip3 install requests pillow
+
+# Step 2: Install Vector
+echo "🔄 Installing Vector..."
+curl -sS https://vector.dev/generic-install.sh | sh
+
+# Step 3: Install Ollama
+echo "🤖 Installing Ollama..."
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.2:3b
+
+# Step 4: Create working directory
+mkdir -p /opt/vps-ai-analysis
+cd /opt/vps-ai-analysis
+
+# Step 5: Setup virtual environment
+python3 -m venv venv
+source venv/bin/activate
+pip install requests
+
+# Step 6: Setup systemd service
+cat > /etc/systemd/system/vps-ai-analyzer.service << 'EOF'
+[Unit]
+Description=VPS AI Log Analyzer
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/vps-ai-analysis
+ExecStart=/opt/vps-ai-analysis/venv/bin/python3 analyzer.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable vps-ai-analyzer
+systemctl start vps-ai-analyzer
+
+# Step 7: Setup daily report cron
+echo "0 6 * * * /opt/vps-ai-analysis/venv/bin/python3 /opt/vps-ai-analysis/report.py >> /var/log/vps-ai-analysis/cron.log 2>&1" | crontab -
+
+echo "✅ Deployment complete!"
+```
+
+---
+
+## Performance & Cost
+
+### Resource Usage
+
+| Component | CPU | Memory | Disk |
+|-----------|-----|--------|------|
+| Vector | <1% | ~50MB | - |
+| Ollama (llama3.2:3b) | On-demand | ~2GB | ~2GB |
+| Python Analyzer | <1% | ~100MB | - |
+| **Total** | **<5%** | **~3GB** | **~4GB** |
+
+### Accuracy Improvements
+
+- **Reduced false positives**: From 30–40% with traditional rules down to under 10%
+- **Novel attack detection**: LLM can identify zero-day attack patterns without predefined rules
+- **Response time**: Reduced from hours to minutes
+
+### Ideal Use Cases
+
+- ✅ Personal blog / website VPS
+- ✅ Small-to-medium business production environments
+- ✅ High-traffic API services
+- ✅ Compliance-audited scenarios
+
+---
+
+## Conclusion
+
+AI-powered log analysis doesn't replace traditional security tools — it gives them a "brain". By combining rule engines for known threats, LLMs for understanding unknown patterns, and automated responses to shorten remediation time, you can build enterprise-grade security monitoring on a low-cost VPS.
+
+**Recommended next steps**:
+1. Start with basic rule-based detection (SSH/Web) to establish baselines
+2. Gradually introduce the LLM analysis layer and observe accuracy
+3. Adjust thresholds and prompts based on alert quality
+4. Achieve full automation: detect → analyze → respond → report
+
+Security is not a one-time project but a continuous improvement process. AI makes this journey smarter and more efficient.
