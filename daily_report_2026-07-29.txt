@@ -1,0 +1,29 @@
+[SUCCESS] Daily Article Generation Complete - 2026-07-29
+
+=== CHINESE ARTICLE ===
+Path: content/zh/post/cloud-storage-tiering-cost-optimization.md
+Title: 云端存储成本优化：冷热分层存储策略
+Slug: cloud-storage-tiering-cost-optimization
+Image: /images/posts/cloud-storage-tiering-cost-optimization/featured.png
+Category: 云省钱
+Tags: 云省钱, 存储优化, S3, Tiering, 成本分析, 自动化, 运维
+
+=== ENGLISH ARTICLE ===
+Path: content/en/post/cloud-storage-tiering-cost-optimization.md
+Title: Cloud Storage Cost Optimization: Hot-Cold Tiered Storage Strategy
+Slug: cloud-storage-tiering-cost-optimization
+Image: /images/posts/cloud-storage-tiering-cost-optimization/featured.png
+Category: Cloud Savings
+Tags: Cloud Savings, Storage Optimization, S3, Tiering, Cost Analysis, Automation, DevOps
+
+=== FEATURED IMAGE ===
+Path: static/images/posts/cloud-storage-tiering-cost-optimization/featured.png
+Size: 1200×630 pixels, 55KB
+Style: Dark gradient (#0f172a→#1e293b), indigo accents, rounded corners, NotoSansCJK font
+
+=== GIT ===
+Commit: 899cf14 "chore: add cloud storage tiering cost optimization article (zh + en) with featured image"
+Push: main -> main (origin)
+
+=== DEPLOYMENT ===
+Vercel auto-deployment triggered via GitHub webhook.
