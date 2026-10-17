@@ -1,6 +1,6 @@
 ---
 title: "AI 驱动的 VPS 日志智能轮转与保留策略：从固定周期到自适应生命周期管理"
-description: "Logrotate 固定 7 天保留、日志盘写满触发 OOM——这些痛点的根源是"一刀切"。本文介绍如何用本地 LLM（Ollama + Qwen2.5）分析日志价值密度、异常密度和服务重要性，动态生成每个日志目录的轮转周期、压缩策略和保留天数，并生成可执行的 systemd timer 方案"
+description: "Logrotate 固定 7 天保留、日志盘写满触发 OOM——这些痛点的根源是“一刀切”。本文介绍如何用本地 LLM（Ollama + Qwen2.5）分析日志价值密度、异常密度和服务重要性，动态生成每个日志目录的轮转周期、压缩策略和保留天数，并生成可执行的 systemd timer 方案"
 date: 2026-10-07T20:00:00+08:00
 lastmod: 2026-10-07T20:00:00+08:00
 slug: "ai-vps-adaptive-log-rotation-retention"
